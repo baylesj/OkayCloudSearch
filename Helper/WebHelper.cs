@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 
@@ -15,8 +13,8 @@ namespace AmazingCloudSearch.Helper
         public class JsonResult
         {
             public bool IsError { get; set; }
-            public string exeption { get; set; }
-            public string json { get; set; }
+            public string Exception { get; set; }
+            public string Json { get; set; }
         }
 
         public JsonResult PostRequest(string url, string json)
@@ -26,13 +24,13 @@ namespace AmazingCloudSearch.Helper
                 string rawJsonResult = PostRequestWithException(url, json);
 
                 if (string.IsNullOrEmpty(rawJsonResult) || rawJsonResult.Equals(JSON_ERROR))
-                    return new JsonResult {json = rawJsonResult, exeption = "unknow error", IsError = true};
+                    return new JsonResult {Json = rawJsonResult, Exception = "Unknown Error", IsError = true};
 
-                return new JsonResult { json = rawJsonResult };
+                return new JsonResult { Json = rawJsonResult };
             }
             catch(Exception ex)
             {
-                return new JsonResult { exeption = ex.Message, IsError = true };
+                return new JsonResult { Exception = ex.Message, IsError = true };
             }
         }
 
@@ -43,13 +41,13 @@ namespace AmazingCloudSearch.Helper
                 string rawJsonResult = GetRequestWithException(url);
 
                 if (string.IsNullOrEmpty(rawJsonResult) || rawJsonResult.Equals(JSON_ERROR))
-                    return new JsonResult { json = rawJsonResult, exeption = "unknow error", IsError = true };
+                    return new JsonResult { Json = rawJsonResult, Exception = "Unknown Error", IsError = true };
 
-                return new JsonResult { json = rawJsonResult };
+                return new JsonResult { Json = rawJsonResult };
             }
             catch (Exception ex)
             {
-                return new JsonResult { exeption = ex.Message, IsError = true };
+                return new JsonResult { Exception = ex.Message, IsError = true };
             }
         }
 
@@ -87,7 +85,7 @@ namespace AmazingCloudSearch.Helper
 
         private string RunResponse(HttpWebRequest request)
         {
-            HttpWebResponse response = null;
+            HttpWebResponse response;
             try
             {
                 response = (HttpWebResponse)request.GetResponse();
@@ -99,16 +97,23 @@ namespace AmazingCloudSearch.Helper
 
                 using (var errorResponse = (HttpWebResponse)wex.Response)
                 {
-                    using (var reader = new StreamReader(errorResponse.GetResponseStream()))
+                    var errorStream = errorResponse.GetResponseStream();
+                    if (errorStream != null)
                     {
-                        return reader.ReadToEnd(); //expected error from JSON
+                        using (var reader = new StreamReader(errorStream))
+                        {
+                            return reader.ReadToEnd();
+                        }                        
                     }
+                    return "";
                 }
             }
 
-            var retVal = new StreamReader(stream: response.GetResponseStream()).ReadToEnd();
+            var stream = response.GetResponseStream();
+            if (stream != null)
+                return new StreamReader(stream).ReadToEnd();
 
-            return retVal;
+            return "";
         }
     }
 }

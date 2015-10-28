@@ -12,40 +12,39 @@ using Newtonsoft.Json;
 namespace AmazingCloudSearch
 {
 
-    public class CloudSearch<T> where T : SearchDocument, new()
+    public class CloudSearch<T> : ICloudSearch<T> where T : SearchDocument, new()
     {
-        private string _documentUri;
-        private string _searchUri;
-        private ActionBuilder<T> _actionBuilder;
-        private WebHelper _webHelper;
-        private QueryBuilder<T> _queryBuilder;
-        private HitFeeder<T> _hitFeeder;
-        private FacetBuilder _facetBuilder;
+        private readonly string _documentUri;
+        private readonly ActionBuilder<T> _actionBuilder;
+        private readonly WebHelper _webHelper;
+        private readonly QueryBuilder<T> _queryBuilder;
+        private readonly HitFeeder<T> _hitFeeder;
+        private readonly FacetBuilder _facetBuilder;
 
         public CloudSearch(string awsCloudSearchId, string apiVersion)
         {
-            _searchUri = string.Format("http://search-{0}/{1}/search", awsCloudSearchId, apiVersion);
+            string searchUri = string.Format("http://search-{0}/{1}/search", awsCloudSearchId, apiVersion);
             _documentUri = string.Format("http://doc-{0}/{1}/documents/batch", awsCloudSearchId, apiVersion);
             _actionBuilder = new ActionBuilder<T>();
-            _queryBuilder = new QueryBuilder<T>(_searchUri);
+            _queryBuilder = new QueryBuilder<T>(searchUri);
             _webHelper = new WebHelper();
             _hitFeeder = new HitFeeder<T>();
             _facetBuilder = new FacetBuilder();
         }
 
-		private R Add<R>(List<T> liToAdd) where R : BasicResult, new()
-		{
-			List<BasicDocumentAction> liAction = new List<BasicDocumentAction>();
+        private R Add<R>(List<T> liToAdd) where R : BasicResult, new()
+        {
+            List<BasicDocumentAction> liAction = new List<BasicDocumentAction>();
 
-			BasicDocumentAction action;
-			foreach (T toAdd in liToAdd)
-			{
-				action = _actionBuilder.BuildAction(toAdd, ActionType.ADD);
-				liAction.Add(action);
-			}
+            BasicDocumentAction action;
+            foreach (T toAdd in liToAdd)
+            {
+                action = _actionBuilder.BuildAction(toAdd, ActionType.ADD);
+                liAction.Add(action);
+            }
 
-			return PerformDocumentAction<R>(liAction);
-		}
+            return PerformDocumentAction<R>(liAction);
+        }
 
         private R Add<R>(T toAdd) where R : BasicResult, new()
         {
@@ -54,10 +53,10 @@ namespace AmazingCloudSearch
             return PerformDocumentAction<R>(action);
         }
 
-		public AddResult Add(List<T> toAdd)
-		{
-			return Add<AddResult>(toAdd);
-		}
+        public AddResult Add(List<T> toAdd)
+        {
+            return Add<AddResult>(toAdd);
+        }
 
         public AddResult Add(T toAdd)
         {
@@ -88,16 +87,16 @@ namespace AmazingCloudSearch
             }
         }
 
-        private SearchResult<T> SearchWithException(SearchQuery<T> query)
+        public SearchResult<T> SearchWithException(SearchQuery<T> query)
         {
             var searchUrlRequest = _queryBuilder.BuildSearchQuery(query);
 
             var jsonResult = _webHelper.GetRequest(searchUrlRequest);
 
             if (jsonResult.IsError)
-                return new SearchResult<T> {error = jsonResult.exeption, IsError = true};
+                return new SearchResult<T> {error = jsonResult.Exception, IsError = true};
 
-            var jsonDynamic = JsonConvert.DeserializeObject<dynamic>(jsonResult.json);
+            var jsonDynamic = JsonConvert.DeserializeObject<dynamic>(jsonResult.Json);
 
             var hit = RemoveHit(jsonDynamic);
 
@@ -137,9 +136,9 @@ namespace AmazingCloudSearch
             var jsonResult = _webHelper.PostRequest(_documentUri, actionJson);
 
             if (jsonResult.IsError)
-                return new R { IsError = true, status = "error", errors = new List<Error> { new Error { message = jsonResult.exeption } } };
+                return new R { IsError = true, status = "error", errors = new List<Error> { new Error { message = jsonResult.Exception } } };
 
-            R result = JsonConvert.DeserializeObject<R>(jsonResult.json);
+            R result = JsonConvert.DeserializeObject<R>(jsonResult.Json);
 
             if (result.status != null && result.status.Equals("error"))
                 result.IsError = true;

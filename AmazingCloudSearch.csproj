@@ -16,6 +16,7 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <DontImportPostSharp>True</DontImportPostSharp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,11 +38,11 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\LIB\JSon.Net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>packages\Newtonsoft.Json.7.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="PostSharp, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b13fd38b8f9c99d7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\LIB\PostSharp.2.1.5.1\lib\net20\PostSharp.dll</HintPath>
+    <Reference Include="PostSharp">
+      <HintPath>packages\PostSharp.4.1.28\lib\net35-client\PostSharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -57,6 +58,8 @@
     <Compile Include="Contract\Facet\Constraint.cs" />
     <Compile Include="Contract\Facet\Constraints.cs" />
     <Compile Include="Contract\Result\FacetResult.cs" />
+    <Compile Include="Helper\ConvertSingle.cs" />
+    <Compile Include="ICloudSearch.cs" />
     <Compile Include="Query\Boolean\StringListBooleanCondition.cs" />
     <Compile Include="Query\Boolean\IntListBooleanCondition.cs" />
     <Compile Include="Serialization\FacetBuilder.cs" />
@@ -64,7 +67,7 @@
     <Compile Include="Query\Boolean\IntBooleanCondition.cs" />
     <Compile Include="Query\IntegerRange.cs" />
     <Compile Include="Query\Boolean\StringBooleanCondition.cs" />
-    <Compile Include="Query\facets\IFacetContraint.cs" />
+    <Compile Include="Query\facets\IFacetConstraint.cs" />
     <Compile Include="Query\facets\Facet.cs" />
     <Compile Include="Helper\ConvertArray.cs" />
     <Compile Include="Helper\ListProperties.cs" />
@@ -83,7 +86,7 @@
     <Compile Include="Contract\Result\DeleteResult.cs" />
     <Compile Include="Contract\Result\BasicResult.cs" />
     <Compile Include="Contract\Result\UpdateResult.cs" />
-    <Compile Include="Query\facets\IntFacetContraints.cs" />
+    <Compile Include="Query\facets\IntFacetConstraints.cs" />
     <Compile Include="Query\facets\StringFacetConstraints.cs" />
     <Compile Include="Query\Boolean\IBooleanCondition.cs" />
     <Compile Include="Query\SearchQuery.cs" />
@@ -93,6 +96,11 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="packages\PostSharp.4.1.28\tools\PostSharp.targets" Condition="Exists('packages\PostSharp.4.1.28\tools\PostSharp.targets')" />
+  <Target Name="EnsurePostSharpImported" BeforeTargets="BeforeBuild" Condition="'$(PostSharp30Imported)' == ''">
+    <Error Condition="!Exists('packages\PostSharp.4.1.28\tools\PostSharp.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://www.postsharp.net/links/nuget-restore." />
+    <Error Condition="Exists('packages\PostSharp.4.1.28\tools\PostSharp.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://www.postsharp.net/links/nuget-restore." />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

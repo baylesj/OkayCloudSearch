@@ -5,7 +5,7 @@ using AmazingCloudSearch.Query;
 
 namespace AmazingCloudSearch.Query.Facets
 {
-    public class StringFacetConstraints : IFacetContraint
+    public class StringFacetConstraints : IFacetConstraint
     {
         public List<string> Constraint { get; set; }
 

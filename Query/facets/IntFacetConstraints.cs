@@ -3,11 +3,11 @@ using System.Text;
 
 namespace AmazingCloudSearch.Query.Facets
 {
-    public class IntFacetContraints : IntegerRange, IFacetContraint
+    public class IntFacetConstraints : IntegerRange, IFacetConstraint
     {
         public List<string> Constraint { get; set; }
 
-        public IntFacetContraints()
+        public IntFacetConstraints()
         {
             Constraint = new List<string>();
         }
