@@ -22,7 +22,7 @@ namespace OkayCloudSearch.Builder
         private static readonly Regex PlusRegex = new Regex(@"\++", RegexOptions.Compiled);
         private static readonly Regex UrlEncodedSpaceRegex = new Regex(@"%20+", RegexOptions.Compiled);
 
-        private const double MaxLevenshteinDistance = 0.7;
+        private const double MaxLevenshteinDistance = 0.3;
         private const short MaxKeywordLength = 255;
 
         public QueryBuilder(string searchUri)
@@ -40,11 +40,7 @@ namespace OkayCloudSearch.Builder
             var url = new StringBuilder(_searchUri);
             url.Append("?");
 
-            // In 2013 Api, we cannot have both boolean query and keyword search
-            if (query.BooleanQuery == null || query.BooleanQuery.Conditions == null || !query.BooleanQuery.Conditions.Any())
-                FeedKeyword(query.Keyword, url);
-            else
-                FeedBooleanCriteria(query.Keyword, query.BooleanQuery, url);
+            FeedBooleanCriteria(query.Keyword, query.BooleanQuery, url);
 
             FeedFacet(query.Facets, url);
 
@@ -79,25 +75,11 @@ namespace OkayCloudSearch.Builder
         {
             var url = new StringBuilder();
 
-            FeedKeyword(query.Keyword, url);
-
             FeedBooleanCriteria(null, query.BooleanQuery, url);
 
             FeedFacet(query.Facets, url);
 
             return url.ToString();
-        }
-
-        private void FeedKeyword(string keyword, StringBuilder url)
-        {
-            if (!string.IsNullOrEmpty(keyword))
-            {
-                keyword = PlusRegex.Replace(keyword, " ");
-                keyword = Uri.EscapeDataString(keyword);
-
-                url.Append("q=");
-                url.Append(UrlEncodedSpaceRegex.Replace(keyword, "+"));				
-            }
         }
 
         private void FeedBooleanCriteria(string keyword, BooleanQuery booleanQuery, StringBuilder url)
