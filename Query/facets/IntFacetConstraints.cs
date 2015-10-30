@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AmazingCloudSearch.Query.Facets
+namespace OkayCloudSearch.Query.Facets
 {
     public class IntFacetConstraints : IntegerRange, IFacetConstraint
     {

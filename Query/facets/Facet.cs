@@ -1,6 +1,6 @@
-using AmazingCloudSearch.Query;
+using OkayCloudSearch.Query;
 
-namespace AmazingCloudSearch.Query.Facets
+namespace OkayCloudSearch.Query.Facets
 {
     public class Facet
     {

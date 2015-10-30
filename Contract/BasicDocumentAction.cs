@@ -1,4 +1,4 @@
-namespace AmazingCloudSearch.Contract
+namespace OkayCloudSearch.Contract
 {
     public class BasicDocumentAction
     {

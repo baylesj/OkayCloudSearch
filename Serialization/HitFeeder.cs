@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Script.Serialization;
-using AmazingCloudSearch.Contract;
-using AmazingCloudSearch.Contract.Result;
-using AmazingCloudSearch.Helper;
+using OkayCloudSearch.Contract;
+using OkayCloudSearch.Contract.Result;
+using OkayCloudSearch.Helper;
 
-namespace AmazingCloudSearch.Serialization
+namespace OkayCloudSearch.Serialization
 {
     class HitFeeder<T> where T : SearchDocument, new()
     {

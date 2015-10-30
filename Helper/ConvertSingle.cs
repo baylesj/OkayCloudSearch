@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AmazingCloudSearch.Helper
+namespace OkayCloudSearch.Helper
 {
     class ConvertSingle
     {

@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using AmazingCloudSearch.Builder;
-using AmazingCloudSearch.Contract;
-using AmazingCloudSearch.Contract.Result;
-using AmazingCloudSearch.Enum;
-using AmazingCloudSearch.Helper;
-using AmazingCloudSearch.Query;
-using AmazingCloudSearch.Serialization;
 using Newtonsoft.Json;
+using OkayCloudSearch.Builder;
+using OkayCloudSearch.Contract;
+using OkayCloudSearch.Contract.Result;
+using OkayCloudSearch.Enum;
+using OkayCloudSearch.Helper;
+using OkayCloudSearch.Query;
+using OkayCloudSearch.Serialization;
 
-namespace AmazingCloudSearch
+namespace OkayCloudSearch
 {
 
     public class CloudSearch<T> : ICloudSearch<T> where T : SearchDocument, new()

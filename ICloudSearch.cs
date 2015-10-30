@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using AmazingCloudSearch.Contract;
-using AmazingCloudSearch.Contract.Result;
-using AmazingCloudSearch.Query;
+using OkayCloudSearch.Contract;
+using OkayCloudSearch.Contract.Result;
+using OkayCloudSearch.Query;
 
-namespace AmazingCloudSearch
+namespace OkayCloudSearch
 {
     public interface ICloudSearch<T> where T : SearchDocument, new()
     {

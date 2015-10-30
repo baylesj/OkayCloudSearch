@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using AmazingCloudSearch.Contract;
-using AmazingCloudSearch.Query;
-using AmazingCloudSearch.Query.Boolean;
-using AmazingCloudSearch.Query.Facets;
+using OkayCloudSearch.Contract;
+using OkayCloudSearch.Query;
+using OkayCloudSearch.Query.Boolean;
+using OkayCloudSearch.Query.Facets;
 
-namespace AmazingCloudSearch.Builder
+namespace OkayCloudSearch.Builder
 {
     /*
      * 
@@ -16,12 +16,14 @@ namespace AmazingCloudSearch.Builder
      * in the string add the & at the end of it.
      * 
      */
-
     public class QueryBuilder<T> where T : SearchDocument, new()
     {
-        private string _searchUri;
-        private static readonly Regex plusRegex = new Regex(@"\++", RegexOptions.Compiled);
-        private static readonly Regex urlEncodedSpaceRegex = new Regex(@"%20+", RegexOptions.Compiled);
+        private readonly string _searchUri;
+        private static readonly Regex PlusRegex = new Regex(@"\++", RegexOptions.Compiled);
+        private static readonly Regex UrlEncodedSpaceRegex = new Regex(@"%20+", RegexOptions.Compiled);
+
+        private const double MaxLevenshteinDistance = 0.7;
+        private const short MaxKeywordLength = 255;
 
         public QueryBuilder(string searchUri)
         {
@@ -38,9 +40,11 @@ namespace AmazingCloudSearch.Builder
             var url = new StringBuilder(_searchUri);
             url.Append("?");
 
-            FeedKeyword(query.Keyword, url);
-
-            FeedBooleanCritera(query.BooleanQuery, url);
+            // In 2013 Api, we cannot have both boolean query and keyword search
+            if (query.BooleanQuery == null || query.BooleanQuery.Conditions == null || !query.BooleanQuery.Conditions.Any())
+                FeedKeyword(query.Keyword, url);
+            else
+                FeedBooleanCriteria(query.Keyword, query.BooleanQuery, url);
 
             FeedFacet(query.Facets, url);
 
@@ -77,7 +81,7 @@ namespace AmazingCloudSearch.Builder
 
             FeedKeyword(query.Keyword, url);
 
-            FeedBooleanCritera(query.BooleanQuery, url);
+            FeedBooleanCriteria(null, query.BooleanQuery, url);
 
             FeedFacet(query.Facets, url);
 
@@ -88,15 +92,15 @@ namespace AmazingCloudSearch.Builder
         {
             if (!string.IsNullOrEmpty(keyword))
             {
-                keyword = plusRegex.Replace(keyword, " ");
+                keyword = PlusRegex.Replace(keyword, " ");
                 keyword = Uri.EscapeDataString(keyword);
 
                 url.Append("q=");
-                url.Append(urlEncodedSpaceRegex.Replace(keyword, "+"));				
+                url.Append(UrlEncodedSpaceRegex.Replace(keyword, "+"));				
             }
         }
 
-        private void FeedBooleanCritera(BooleanQuery booleanQuery, StringBuilder url)
+        private void FeedBooleanCriteria(string keyword, BooleanQuery booleanQuery, StringBuilder url)
         {
             if(booleanQuery.Conditions == null || booleanQuery.Conditions.Count == 0)
                 return;
@@ -104,79 +108,83 @@ namespace AmazingCloudSearch.Builder
             bool hasParameters = (url.Length > 0);
 
             StringBuilder andConditions = new StringBuilder();
-            StringBuilder orConditions = new StringBuilder();
-            List<string> listOrCondintions = new List<string>();
+            List<string> orConditions = new List<string>();
 
-            foreach (var condition in booleanQuery.Conditions)
-            {
-                if (condition.IsOrCondition())
-                {
-                    listOrCondintions.Add(condition.GetCondictionParam());
-                }
-                else
-                {
-                    andConditions.Append(condition.GetCondictionParam());
-                    andConditions.Append("+");
-                }
-            }
+            MoveConditionsToLists(booleanQuery, orConditions, andConditions);
 
             List<string> booleanConditions = new List<string>();
 
             if (andConditions.Length > 0)
             {
+                // What does this line do??
                 andConditions.Remove(andConditions.Length - 1, 1);
-                booleanConditions.Add("and+" + andConditions);
+                booleanConditions.Add(andConditions.ToString());
             }
 
-            if (orConditions.Length > 0)
+            if (orConditions.Count == 1)
             {
-                orConditions.Remove(orConditions.Length - 1, 1);
-                listOrCondintions.Add(orConditions.ToString());
+                booleanConditions.Add(orConditions[0]);
             }
-            
-            if (listOrCondintions.Count == 1)
+            else if (orConditions.Count > 1)
             {
-                booleanConditions.Add("or+" + listOrCondintions[0]);
+                booleanConditions.Add(JoinConditionsIntoQuery(orConditions));
             }
-            else if (listOrCondintions.Count > 1)
-            {
-                orConditions.Clear();
-                orConditions.Append("and");
 
-                foreach (string listOrCondintion in listOrCondintions)
-                {
-                    orConditions.Append("+(or+");
-                    orConditions.Append(listOrCondintion);
-                    orConditions.Append(")");
-                }
-
-                booleanConditions.Add(orConditions.ToString());
-            }
+            TurnKeywordIntoCondition(keyword, booleanConditions);
 
             if (hasParameters)
             {
                 url.Append("&");
             }
 
-            url.Append("q.parser=structured&q=");
+            url.Append("q.parser=lucene&q=");
+            string query = JoinConditionsIntoQuery(booleanConditions);
+            url.Append(query);
+        }
 
-            string postpendBooleanCondition = null;
-            int count = 0;
-            foreach (string booleanCondition in booleanConditions)
+        private static string JoinConditionsIntoQuery(List<string> conditions)
+        {
+            return "(" + String.Join(Constants.Operators.And.ToQueryString(), conditions.Select(x => "(" + x + ")").ToList()) + ")";
+        }
+
+        private static void TurnKeywordIntoCondition(string keyword, List<string> booleanConditions)
+        {
+            if (!String.IsNullOrEmpty(keyword))
             {
-                if (count > 0)
+                if (keyword.Length > MaxKeywordLength)
                 {
-                    url.Append("+");
+                    keyword = TruncateKeyword(keyword);
                 }
+                var words = keyword.Split(' ').ToList();
+                var conditions = words.Select(x => x + "~" + MaxLevenshteinDistance);
+                var keywordConditions = String.Join(Constants.Operators.And.ToQueryString(), conditions);
 
-                url.Append("(");
-                url.Append(booleanCondition);
-                postpendBooleanCondition += ")";
-                
-                count++;
+                booleanConditions.Add(keywordConditions);
             }
+        }
 
-            url.Append(postpendBooleanCondition);
+        private static string TruncateKeyword(string keyword)
+        {
+            keyword = keyword.Substring(0, 255);
+            var index = keyword.LastIndexOf(' ');
+            keyword = keyword.Substring(0, index);
+            return keyword;
+        }
+
+        private static void MoveConditionsToLists(BooleanQuery booleanQuery, List<string> listOrConditions, StringBuilder andConditions)
+        {
+            foreach (var condition in booleanQuery.Conditions)
+            {
+                if (condition.IsOrCondition())
+                {
+                    listOrConditions.Add(condition.GetParam());
+                }
+                else
+                {
+                    andConditions.Append(condition.GetParam());
+                    andConditions.Append(" AND ");
+                }
+            }
         }
 
         private void FeedStartResultFrom(int? start, StringBuilder url)
@@ -225,7 +233,7 @@ namespace AmazingCloudSearch.Builder
             {
                 url.Append(facet.Name);
 
-                if (!object.ReferenceEquals(lastItem, facet))
+                if (!ReferenceEquals(lastItem, facet))
                     url.Append(",");
             }
 

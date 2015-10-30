@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace AmazingCloudSearch.Query.Facets
+namespace OkayCloudSearch.Query.Facets
 {
     public interface IFacetConstraint
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AmazingCloudSearch.Query.Boolean
+namespace OkayCloudSearch.Query.Boolean
 {
 	public class IntListBooleanCondition : IBooleanCondition
 	{
@@ -18,7 +18,7 @@ namespace AmazingCloudSearch.Query.Boolean
 			IsOrConditionParam = isOrConditionParam;
 		}
 
-        public string GetCondictionParam()
+        public string GetParam()
         {
 			StringBuilder condictionParam = new StringBuilder();
 

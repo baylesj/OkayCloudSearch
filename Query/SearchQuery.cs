@@ -1,12 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using System.Text;
-using AmazingCloudSearch.Contract;
-using AmazingCloudSearch.Helper;
-using AmazingCloudSearch.Query.Boolean;
-using AmazingCloudSearch.Query.Facets;
+using OkayCloudSearch.Contract;
+using OkayCloudSearch.Helper;
+using OkayCloudSearch.Query.Boolean;
+using OkayCloudSearch.Query.Facets;
 
-namespace AmazingCloudSearch.Query
+namespace OkayCloudSearch.Query
 {
     public class SearchQuery<T> where T : SearchDocument, new()
     {
@@ -18,30 +18,23 @@ namespace AmazingCloudSearch.Query
 
         public List<string> Fields { get; set; }
 
-		public int? Start { get; set; }
+        public int? Start { get; set; }
 
         public int? Size { get; set; }
 
-		public string PublicSearchQueryString { get; set; }
+        public string PublicSearchQueryString { get; set; }
 
-		public SearchQuery(bool buildFieldsFromType = true)
-		{
-			if (buildFieldsFromType)
-			{
-				BuildPropertiesArray(new ListProperties<T>().GetProperties());
-			}
-		}
+        public SearchQuery(bool buildFieldsFromType = true)
+        {
+            if (buildFieldsFromType)
+            {
+                BuildPropertiesArray(new ListProperties<T>().GetProperties());
+            }
+        }
 
-		private void BuildPropertiesArray(List<PropertyInfo> properties)
-		{
-			var li = new List<string>();
-
-			foreach (var property in properties)
-			{
-				li.Add(property.Name);
-			}
-
-			Fields = li;
-		}
+        private void BuildPropertiesArray(List<PropertyInfo> properties)
+        {
+            Fields = new List<string>(properties.Select(x => x.Name).ToList());
+        }
     }
 }

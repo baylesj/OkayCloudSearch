@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace AmazingCloudSearch.Contract.Facet
+namespace OkayCloudSearch.Contract.Facet
 {
     public class Constraints
     {

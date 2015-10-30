@@ -3,7 +3,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 
-namespace AmazingCloudSearch.Helper
+namespace OkayCloudSearch.Helper
 {
     class WebHelper
     {

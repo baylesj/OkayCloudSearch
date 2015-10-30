@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace AmazingCloudSearch.Query.Boolean
+namespace OkayCloudSearch.Query.Boolean
 {
     public class BooleanQuery
     {

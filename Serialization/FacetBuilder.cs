@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.Script.Serialization;
-using AmazingCloudSearch.Contract.Facet;
-using AmazingCloudSearch.Contract.Result;
 using Newtonsoft.Json;
+using OkayCloudSearch.Contract.Facet;
+using OkayCloudSearch.Contract.Result;
 
-namespace AmazingCloudSearch.Serialization
+namespace OkayCloudSearch.Serialization
 {
     class FacetBuilder
     {

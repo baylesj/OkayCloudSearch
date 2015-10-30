@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AmazingCloudSearch.Contract.Facet;
+using OkayCloudSearch.Contract.Facet;
 
-namespace AmazingCloudSearch.Contract.Result
+namespace OkayCloudSearch.Contract.Result
 {
     public class FacetResult
     {

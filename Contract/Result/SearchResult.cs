@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
-using AmazingCloudSearch.Contract.Facet;
+using OkayCloudSearch.Contract.Facet;
 
-namespace AmazingCloudSearch.Contract.Result
+namespace OkayCloudSearch.Contract.Result
 {
     public class SearchResult<T> where T : SearchDocument, new()
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AmazingCloudSearch.Contract.Result
+namespace OkayCloudSearch.Contract.Result
 {
     public class Error
     {

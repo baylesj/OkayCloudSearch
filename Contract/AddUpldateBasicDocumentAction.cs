@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace AmazingCloudSearch.Contract
+namespace OkayCloudSearch.Contract
 {
 
     public class AddUpldateBasicDocumentAction<T> : BasicDocumentAction where T : SearchDocument

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web.Script.Serialization;
 
-namespace AmazingCloudSearch.Contract
+namespace OkayCloudSearch.Contract
 {
     public class SearchDocument
     {
@@ -12,7 +12,7 @@ namespace AmazingCloudSearch.Contract
         {
         }
 
-        [ScriptIgnoreAttribute]
+        [ScriptIgnore]
         public string id { get; set; }
     }
 }

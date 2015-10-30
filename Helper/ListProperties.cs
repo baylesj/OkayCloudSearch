@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace AmazingCloudSearch.Helper
+namespace OkayCloudSearch.Helper
 {
     class ListProperties<T>
     {

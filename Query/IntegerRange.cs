@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace AmazingCloudSearch.Query
+namespace OkayCloudSearch.Query
 {
     public class IntegerRange
     {

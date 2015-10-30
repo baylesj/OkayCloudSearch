@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AmazingCloudSearch.Query.Boolean;
+using OkayCloudSearch.Query.Boolean;
 
-namespace AmazingCloudSearch.Query.Boolean
+namespace OkayCloudSearch.Query.Boolean
 {
     public class IntBooleanCondition : IntegerRange, IBooleanCondition
     {
@@ -39,7 +39,7 @@ namespace AmazingCloudSearch.Query.Boolean
             Condition = GetInterval(null, to);
         }
 
-        public string GetCondictionParam()
+        public string GetParam()
         {
             return Field + "%3A" + Condition;
         }

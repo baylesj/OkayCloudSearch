@@ -1,4 +1,4 @@
-namespace AmazingCloudSearch.Contract.Result
+namespace OkayCloudSearch.Contract.Result
 {
     public class UpdateResult : BasicResult
     {

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AmazingCloudSearch.Contract;
-using AmazingCloudSearch.Enum;
-using AmazingCloudSearch.Helper;
+using OkayCloudSearch.Contract;
+using OkayCloudSearch.Enum;
+using OkayCloudSearch.Helper;
 
-namespace AmazingCloudSearch.Builder
+namespace OkayCloudSearch.Builder
 {
     public class ActionBuilder<T> where T : SearchDocument
     {

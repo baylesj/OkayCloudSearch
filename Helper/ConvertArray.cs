@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AmazingCloudSearch.Helper
+namespace OkayCloudSearch.Helper
 {
     public class ConvertArray
     {
