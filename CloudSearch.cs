@@ -11,7 +11,6 @@ using OkayCloudSearch.Serialization;
 
 namespace OkayCloudSearch
 {
-
     public class CloudSearch<T> : ICloudSearch<T> where T : SearchDocument, new()
     {
         private readonly string _documentUri;
@@ -32,25 +31,24 @@ namespace OkayCloudSearch
             _facetBuilder = new FacetBuilder();
         }
 
-        private R Add<R>(List<T> liToAdd) where R : BasicResult, new()
+        private TR Add<TR>(List<T> liToAdd) where TR : BasicResult, new()
         {
             List<BasicDocumentAction> liAction = new List<BasicDocumentAction>();
 
-            BasicDocumentAction action;
             foreach (T toAdd in liToAdd)
             {
-                action = _actionBuilder.BuildAction(toAdd, ActionType.ADD);
+                BasicDocumentAction action = _actionBuilder.BuildAction(toAdd, ActionType.Add);
                 liAction.Add(action);
             }
 
-            return PerformDocumentAction<R>(liAction);
+            return PerformDocumentAction<TR>(liAction);
         }
 
-        private R Add<R>(T toAdd) where R : BasicResult, new()
+        private TR Add<TR>(T toAdd) where TR : BasicResult, new()
         {
-            var action = _actionBuilder.BuildAction(toAdd, ActionType.ADD);
+            var action = _actionBuilder.BuildAction(toAdd, ActionType.Add);
 
-            return PerformDocumentAction<R>(action);
+            return PerformDocumentAction<TR>(action);
         }
 
         public AddResult Add(List<T> toAdd)
@@ -71,7 +69,7 @@ namespace OkayCloudSearch
 
         public DeleteResult Delete(SearchDocument toDelete)
         {
-            var action = _actionBuilder.BuildDeleteAction(new SearchDocument { id = toDelete.id }, ActionType.DELETE);
+            var action = _actionBuilder.BuildDeleteAction(new SearchDocument { id = toDelete.id }, ActionType.Delete);
 
             return PerformDocumentAction<DeleteResult>(action);
         }
@@ -129,16 +127,16 @@ namespace OkayCloudSearch
         }
 
 
-        private R PerformDocumentAction<R>(List<BasicDocumentAction> liAction) where R : BasicResult, new()
+        private TR PerformDocumentAction<TR>(List<BasicDocumentAction> liAction) where TR : BasicResult, new()
         {
             string actionJson = JsonConvert.SerializeObject(liAction);
 
             var jsonResult = _webHelper.PostRequest(_documentUri, actionJson);
 
             if (jsonResult.IsError)
-                return new R { IsError = true, status = "error", errors = new List<Error> { new Error { message = jsonResult.Exception } } };
+                return new TR { IsError = true, status = "error", errors = new List<Error> { new Error { message = jsonResult.Exception } } };
 
-            R result = JsonConvert.DeserializeObject<R>(jsonResult.Json);
+            TR result = JsonConvert.DeserializeObject<TR>(jsonResult.Json);
 
             if (result.status != null && result.status.Equals("error"))
                 result.IsError = true;
@@ -146,11 +144,11 @@ namespace OkayCloudSearch
             return result;
         }
 
-        private R PerformDocumentAction<R>(BasicDocumentAction basicDocumentAction) where R : BasicResult, new()
+        private TR PerformDocumentAction<TR>(BasicDocumentAction basicDocumentAction) where TR : BasicResult, new()
         {
             var listAction = new List<BasicDocumentAction> { basicDocumentAction };
 
-            return PerformDocumentAction<R>(listAction);
+            return PerformDocumentAction<TR>(listAction);
         }
     }
 }

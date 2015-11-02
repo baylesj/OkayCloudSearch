@@ -28,17 +28,17 @@ namespace OkayCloudSearch.Contract.Result
             public string message { get; set; }
         }
 
-        public class Hits<T>
+        public class Hits<TD>
         {
             public int found { get; set; }
             public int start { get; set; }
-            public List<Hit<T>> hit { get; set; }
+            public List<Hit<TD>> hit { get; set; }
         }
 
-        public class Hit<T>
+        public class Hit<TD>
         {
             public string id { get; set; }
-            public T data { get; set; }
+            public TD data { get; set; }
         }
 
         public class Info
@@ -52,23 +52,23 @@ namespace OkayCloudSearch.Contract.Result
             public int cpuTimeMs { get; set; }
         }
 
-		public List<Constraint> GetFacetResults(string name)
-		{
-			List<Constraint> contraints = null;
+        public List<Constraint> GetFacetResults(string name)
+        {
+            List<Constraint> contraints = null;
 
-			if (facetsResults != null && facetsResults.Count > 0)
-			{
-				foreach (FacetResult facetResult in facetsResults)
-				{
-					if (facetResult.Name == name)
-					{
-						contraints = facetResult.Contraint;
-						break;
-					}
-				}
-			}
+            if (facetsResults != null && facetsResults.Count > 0)
+            {
+                foreach (FacetResult facetResult in facetsResults)
+                {
+                    if (facetResult.Name == name)
+                    {
+                        contraints = facetResult.Contraint;
+                        break;
+                    }
+                }
+            }
 
-			return contraints;
-		}
+            return contraints;
+        }
     }
 }

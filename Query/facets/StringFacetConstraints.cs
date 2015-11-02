@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using OkayCloudSearch.Query;
 
 namespace OkayCloudSearch.Query.Facets
 {
@@ -35,7 +34,7 @@ namespace OkayCloudSearch.Query.Facets
                 s.Append(c);
                 s.Append("'");
 
-                if (!object.ReferenceEquals(lastItem, c))
+                if (!ReferenceEquals(lastItem, c))
                     s.Append(",");
             }
 

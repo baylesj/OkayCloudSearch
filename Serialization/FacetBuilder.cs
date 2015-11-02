@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
 using OkayCloudSearch.Contract.Facet;
@@ -11,7 +9,7 @@ namespace OkayCloudSearch.Serialization
 {
     class FacetBuilder
     {
-        private JavaScriptSerializer _serializer;
+        private readonly JavaScriptSerializer _serializer;
 
         public FacetBuilder()
         {
@@ -22,7 +20,7 @@ namespace OkayCloudSearch.Serialization
         {
             try{
                 return BuildFacetWithException(jsonDynamic);
-            }catch(Exception e)
+            }catch(Exception)
             {
                 return new List<FacetResult>();
             }
@@ -42,40 +40,25 @@ namespace OkayCloudSearch.Serialization
 
             foreach (KeyValuePair<string, object> pair in facetDictionary)
             {
-                var contraints = CreateContraint(pair);
+                Constraints contraints = CreateConstraint(pair);
                 liFacet.Add(new FacetResult { Name = pair.Key, Contraint = contraints.constraints });
             }
 
             return liFacet;
         }
 
-        private Constraints CreateContraint(KeyValuePair<string, object> pair)
+        private Constraints CreateConstraint(KeyValuePair<string, object> pair)
         {
             try
             {
                 var tmpContraints = JsonConvert.SerializeObject(pair.Value);
-                var contraints = JsonConvert.DeserializeObject<Constraints>(tmpContraints.ToString());
+                var contraints = JsonConvert.DeserializeObject<Constraints>(tmpContraints);
                 return contraints;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
-        }
-
-        private Constraint BuildContraint(string key, object value)
-        {
-            var valueDic = (Dictionary<string, object>)value;
-
-            List<object> first = null;
-
-            foreach (var pair in valueDic)
-            {
-                first = (List<object>)pair.Value;
-                Console.Write("");
-            }
-
-            return null;
         }
     }
 }

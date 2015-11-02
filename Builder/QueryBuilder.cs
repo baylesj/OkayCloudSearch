@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using OkayCloudSearch.Contract;
 using OkayCloudSearch.Query;
 using OkayCloudSearch.Query.Boolean;
@@ -19,8 +18,6 @@ namespace OkayCloudSearch.Builder
     public class QueryBuilder<T> where T : SearchDocument, new()
     {
         private readonly string _searchUri;
-        private static readonly Regex PlusRegex = new Regex(@"\++", RegexOptions.Compiled);
-        private static readonly Regex UrlEncodedSpaceRegex = new Regex(@"%20+", RegexOptions.Compiled);
 
         private const double MaxLevenshteinDistance = 0.3;
         private const short MaxKeywordLength = 255;

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using OkayCloudSearch.Contract;
+﻿using OkayCloudSearch.Contract;
 using OkayCloudSearch.Enum;
 using OkayCloudSearch.Helper;
 

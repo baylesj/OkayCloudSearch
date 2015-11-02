@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace OkayCloudSearch.Helper
 {
@@ -10,25 +7,26 @@ namespace OkayCloudSearch.Helper
     {
         private List<PropertyInfo> _properties;
 
-        public static object _propertyLock = new object();
+        // http://stackoverflow.com/questions/8411838/c-sharp-lock-in-generic-function
+        // ReSharper disable once UnusedTypeParameter
+        static class TypeLock<TD>
+        {
+            // ReSharper disable once StaticMemberInGenericType
+            public static readonly object SyncLock = new object();
+        }
 
         public List<PropertyInfo> GetProperties()
         {
             if (_properties != null)
                 return _properties;
 
-            lock (_propertyLock)
+            lock (TypeLock<T>.SyncLock)
             {
-                if (_properties != null)
-                    return _properties;
-
-                _properties = List();
-
-                return _properties;
+                return _properties ?? (_properties = ToList());
             }
         }
 
-        public List<PropertyInfo> List()
+        public List<PropertyInfo> ToList()
         {
             _properties = new List<PropertyInfo>();
 

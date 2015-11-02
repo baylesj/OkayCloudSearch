@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OkayCloudSearch.Helper
 {
@@ -38,23 +39,13 @@ namespace OkayCloudSearch.Helper
 
         public List<DateTime> StringToDate(List<string> newValues)
         {
-            var r = new List<DateTime>();
-
-            foreach (var entry in newValues)
-                r.Add(Convert.ToDateTime(entry));
-
-            return r;
+            return newValues.Select(Convert.ToDateTime).ToList();
         }
 
 
         public List<string> IntToString(List<int> contraints)
         {
-            var r = new List<string>();
-
-            foreach (var entry in contraints)
-                r.Add(entry.ToString());
-
-            return r;
+            return contraints.Select(entry => entry.ToString()).ToList();
         }
     }
 }

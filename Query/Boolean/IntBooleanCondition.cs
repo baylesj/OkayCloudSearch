@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using OkayCloudSearch.Query.Boolean;
-
-namespace OkayCloudSearch.Query.Boolean
+﻿namespace OkayCloudSearch.Query.Boolean
 {
     public class IntBooleanCondition : IntegerRange, IBooleanCondition
     {

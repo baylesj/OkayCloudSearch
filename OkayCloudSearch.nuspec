@@ -7,6 +7,7 @@
     <description>Lucene parser based cloud search client</description>
     <authors>Jordan Bayles</authors>
     <owners>Jordan Bayles</owners>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/baylesj/OkayCloudSearch</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
   </metadata>

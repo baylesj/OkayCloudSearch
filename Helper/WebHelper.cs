@@ -8,7 +8,7 @@ namespace OkayCloudSearch.Helper
     class WebHelper
     {
 
-        private static string JSON_ERROR = "error";
+        private static readonly string JsonError = "error";
 
         public class JsonResult
         {
@@ -23,7 +23,7 @@ namespace OkayCloudSearch.Helper
             {
                 string rawJsonResult = PostRequestWithException(url, json);
 
-                if (string.IsNullOrEmpty(rawJsonResult) || rawJsonResult.Equals(JSON_ERROR))
+                if (string.IsNullOrEmpty(rawJsonResult) || rawJsonResult.Equals(JsonError))
                     return new JsonResult {Json = rawJsonResult, Exception = "Unknown Error", IsError = true};
 
                 return new JsonResult { Json = rawJsonResult };
@@ -40,7 +40,7 @@ namespace OkayCloudSearch.Helper
             {
                 string rawJsonResult = GetRequestWithException(url);
 
-                if (string.IsNullOrEmpty(rawJsonResult) || rawJsonResult.Equals(JSON_ERROR))
+                if (string.IsNullOrEmpty(rawJsonResult) || rawJsonResult.Equals(JsonError))
                     return new JsonResult { Json = rawJsonResult, Exception = "Unknown Error", IsError = true };
 
                 return new JsonResult { Json = rawJsonResult };
@@ -93,7 +93,7 @@ namespace OkayCloudSearch.Helper
             catch (WebException wex)
             {
                 if (wex.Response == null)
-                    return JSON_ERROR;
+                    return JsonError;
 
                 using (var errorResponse = (HttpWebResponse)wex.Response)
                 {

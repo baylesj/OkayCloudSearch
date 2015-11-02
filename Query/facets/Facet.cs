@@ -1,5 +1,3 @@
-using OkayCloudSearch.Query;
-
 namespace OkayCloudSearch.Query.Facets
 {
     public class Facet

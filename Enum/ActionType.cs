@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace OkayCloudSearch.Enum
+﻿namespace OkayCloudSearch.Enum
 {
     public enum ActionType
     {
-        ADD,
-        DELETE
+        Add,
+        Delete
     }
 
     public class ActionTypeFunction
