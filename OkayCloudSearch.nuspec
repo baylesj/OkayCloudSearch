@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>OkayCloudSearch</title>
+    <description>Lucene parser based cloud search client</description>
+    <authors>Jordan Bayles</authors>
+    <owners>Jordan Bayles</owners>
+    <projectUrl>https://github.com/baylesj/OkayCloudSearch</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+  </metadata>
+</package>
