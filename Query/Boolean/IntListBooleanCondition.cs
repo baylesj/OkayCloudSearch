@@ -3,45 +3,45 @@ using System.Text;
 
 namespace OkayCloudSearch.Query.Boolean
 {
-	public class IntListBooleanCondition : IBooleanCondition
-	{
+    public class IntListBooleanCondition : IBooleanCondition
+    {
         public string Field { get; set; }
-		public List<int> Conditions { get; set; }
-		public bool IsOrConditionParam { get; set; }
+        public List<int> Conditions { get; private set; }
+        public bool IsOrCondition { get; set; }
 
-		public IntListBooleanCondition(string field, List<int> conditions, bool isOrConditionParam = true)
-		{
-			Field = field;
-			Conditions = conditions;
-			IsOrConditionParam = isOrConditionParam;
-		}
-
-        public string GetParam()
+        public IntListBooleanCondition(string field, List<int> conditions)
+        :this (field, conditions, true)
         {
-			StringBuilder condictionParam = new StringBuilder();
-
-			foreach (int condition in Conditions)
-			{
-				condictionParam.Append(Field + "%3A" + condition);
-				condictionParam.Append("+");
-			}
-
-			if (condictionParam.Length > 0)
-			{
-				condictionParam.Remove(condictionParam.Length - 1, 1);
-			}
-
-            return condictionParam.ToString();
         }
 
-		public bool IsOrCondition()
-		{
-			return IsOrConditionParam;
-		}
+        public IntListBooleanCondition(string field, List<int> conditions, bool isOrCondition)
+        {
+            Field = field;
+            Conditions = conditions;
+            IsOrCondition = isOrCondition;
+        }
 
-		public bool IsList()
-		{
-			return true;
-		}
-	}
+        public string GetQueryString()
+        {
+            StringBuilder builder = new StringBuilder();
+
+            foreach (int c in Conditions)
+            {
+                builder.Append(Field + "%3A" + c);
+                builder.Append("+");
+            }
+
+            if (builder.Length > 0)
+            {
+                builder.Remove(builder.Length - 1, 1);
+            }
+
+            return builder.ToString();
+        }
+
+        public bool IsList()
+        {
+            return true;
+        }
+    }
 }

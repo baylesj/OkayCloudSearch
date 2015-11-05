@@ -2,8 +2,8 @@ namespace OkayCloudSearch.Query.Boolean
 {
     public interface IBooleanCondition
     {
-        string GetParam();
-        bool IsOrCondition();
+        string GetQueryString();
+        bool IsOrCondition { get; }
         bool IsList();
     }
 }

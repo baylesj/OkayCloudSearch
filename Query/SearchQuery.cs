@@ -14,9 +14,9 @@ namespace OkayCloudSearch.Query
 
         public string Keyword { get; set; }
 
-        public List<Facet> Facets { get; set; }
+        public List<Facet> Facets { get; private set; }
 
-        public List<string> Fields { get; set; }
+        public List<string> Fields { get; private set; }
 
         public int? Start { get; set; }
 
@@ -26,6 +26,9 @@ namespace OkayCloudSearch.Query
 
         public SearchQuery(bool buildFieldsFromType = true)
         {
+            Facets = new List<Facet>();
+            Fields = new List<string>();
+
             if (buildFieldsFromType)
             {
                 BuildPropertiesArray(new ListProperties<T>().GetProperties());
@@ -34,7 +37,7 @@ namespace OkayCloudSearch.Query
 
         private void BuildPropertiesArray(List<PropertyInfo> properties)
         {
-            Fields = new List<string>(properties.Select(x => x.Name).ToList());
+            Fields.AddRange(properties.Select(x => x.Name).ToList());
         }
     }
 }

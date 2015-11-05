@@ -7,8 +7,7 @@ namespace OkayCloudSearch.Helper
 {
     class WebHelper
     {
-
-        private static readonly string JsonError = "error";
+        private const string JsonError = "error";
 
         public class JsonResult
         {
@@ -17,7 +16,7 @@ namespace OkayCloudSearch.Helper
             public string Json { get; set; }
         }
 
-        public JsonResult PostRequest(string url, string json)
+        public static JsonResult PostRequest(string url, string json)
         {
             try
             {
@@ -34,7 +33,7 @@ namespace OkayCloudSearch.Helper
             }
         }
 
-        public JsonResult GetRequest(string url)
+        public static JsonResult GetRequest(string url)
         {
             try
             {
@@ -51,7 +50,7 @@ namespace OkayCloudSearch.Helper
             }
         }
 
-        private string PostRequestWithException(string url, string json)
+        private static string PostRequestWithException(string url, string json)
         {
             var request = (HttpWebRequest)WebRequest.Create(url);
 
@@ -71,9 +70,7 @@ namespace OkayCloudSearch.Helper
             return RunResponse(request);
         }
 
-
-
-        private string GetRequestWithException(string url)
+        private static string GetRequestWithException(string url)
         {
             var request = (HttpWebRequest) WebRequest.Create(url);
             request.ProtocolVersion = HttpVersion.Version11;
@@ -83,7 +80,7 @@ namespace OkayCloudSearch.Helper
             return RunResponse(request);
         }
 
-        private string RunResponse(HttpWebRequest request)
+        private static string RunResponse(HttpWebRequest request)
         {
             HttpWebResponse response;
             try

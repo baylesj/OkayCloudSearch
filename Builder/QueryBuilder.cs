@@ -9,17 +9,11 @@ using OkayCloudSearch.Query.Facets;
 
 namespace OkayCloudSearch.Builder
 {
-    /*
-     * 
-     * The rules when building the URL string it that ONLY function who write
-     * in the string add the & at the end of it.
-     * 
-     */
     public class QueryBuilder<T> where T : SearchDocument, new()
     {
         private readonly string _searchUri;
 
-        private const double MaxLevenshteinDistance = 0.3;
+        public double MaxLevenshteinDistance = 0.3;
         private const short MaxKeywordLength = 255;
 
         public QueryBuilder(string searchUri)
@@ -126,7 +120,7 @@ namespace OkayCloudSearch.Builder
             return "(" + String.Join(Constants.Operators.And.ToQueryString(), conditions.Select(x => "(" + x + ")").ToList()) + ")";
         }
 
-        private static void TurnKeywordIntoCondition(string keyword, List<string> booleanConditions)
+        private void TurnKeywordIntoCondition(string keyword, List<string> booleanConditions)
         {
             if (!String.IsNullOrEmpty(keyword))
             {
@@ -154,13 +148,13 @@ namespace OkayCloudSearch.Builder
         {
             foreach (var condition in booleanQuery.Conditions)
             {
-                if (condition.IsOrCondition())
+                if (condition.IsOrCondition)
                 {
-                    listOrConditions.Add(condition.GetParam());
+                    listOrConditions.Add(condition.GetQueryString());
                 }
                 else
                 {
-                    andConditions.Append(condition.GetParam());
+                    andConditions.Append(condition.GetQueryString());
                     andConditions.Append(" AND ");
                 }
             }
@@ -236,25 +230,35 @@ namespace OkayCloudSearch.Builder
 
             if(facet.TopResult != null)
             {
-                url.Append("&");
-                url.Append("facet-");
-                url.Append(facet.Name);
-                url.Append("-top-n=");
-                url.Append(facet.TopResult);
+                AppendTopResult(facet, url);
             }
 
             if (facet.FacetConstraint != null)
             {
                 var param = facet.FacetConstraint.GetRequestParam();
-                if (param != null)
-                {
-                    url.Append("&");
-                    url.Append("facet-");
-                    url.Append(facet.Name);
-                    url.Append("-constraints=");
-                    url.Append(param);
-                }
+                AppendRequestParam(facet, url, param);
             }
+        }
+
+        private static void AppendRequestParam(Facet facet, StringBuilder url, string param)
+        {
+            if (param != null)
+            {
+                url.Append("&");
+                url.Append("facet-");
+                url.Append(facet.Name);
+                url.Append("-constraints=");
+                url.Append(param);
+            }
+        }
+
+        private static void AppendTopResult(Facet facet, StringBuilder url)
+        {
+            url.Append("&");
+            url.Append("facet-");
+            url.Append(facet.Name);
+            url.Append("-top-n=");
+            url.Append(facet.TopResult);
         }
 
         private void FeedReturnFields(List<string> fields, StringBuilder url)

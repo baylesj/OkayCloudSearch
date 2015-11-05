@@ -16,7 +16,7 @@ namespace OkayCloudSearch.Builder
 
         public AddUpldateBasicDocumentAction<T> BuildAction(T document, ActionType actionType)
         {
-            int version = Timestamp.CurrentTimeStamp();
+            int version = Timestamp.CurrentTimestamp();
 
             return BuildAction(document, actionType, version);
         }
@@ -31,7 +31,7 @@ namespace OkayCloudSearch.Builder
 
         public BasicDocumentAction BuildDeleteAction(SearchDocument document, ActionType actionType)
         {
-            int version = Timestamp.CurrentTimeStamp();
+            int version = Timestamp.CurrentTimestamp();
 
             return BuildDeleteAction(document, actionType, version);
         }

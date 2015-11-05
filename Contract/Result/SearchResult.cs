@@ -54,7 +54,7 @@ namespace OkayCloudSearch.Contract.Result
 
         public List<Constraint> GetFacetResults(string name)
         {
-            List<Constraint> contraints = null;
+            List<Constraint> constraints = null;
 
             if (facetsResults != null && facetsResults.Count > 0)
             {
@@ -62,13 +62,13 @@ namespace OkayCloudSearch.Contract.Result
                 {
                     if (facetResult.Name == name)
                     {
-                        contraints = facetResult.Contraint;
+                        constraints = facetResult.Constraint;
                         break;
                     }
                 }
             }
 
-            return contraints;
+            return constraints;
         }
     }
 }

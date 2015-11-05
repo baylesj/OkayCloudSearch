@@ -7,34 +7,34 @@ namespace OkayCloudSearch.Helper
     public class ConvertArray
     {
 
-        public List<int> StringToInt(List<string> newValues)
+        public static List<int> StringToInt(List<string> newValues)
         {
-            var r = new List<int>();
+            var list = new List<int>();
 
             foreach (var entry in newValues)
             {
                 int value;
                 if (int.TryParse(entry, out value))
-                    r.Add(value);
+                    list.Add(value);
             }
 
-            return r;
+            return list;
         }
 
         public List<int?> StringToIntNull(List<string> newValues)
         {
-            var r = new List<int?>();
+            var list = new List<int?>();
 
             foreach (var entry in newValues)
             {
                 int value;
                 if (int.TryParse(entry, out value))
-                    r.Add(value);
+                    list.Add(value);
                 else
-                    r.Add(null);
+                    list.Add(null);
             }
 
-            return r;
+            return list;
         }
 
         public List<DateTime> StringToDate(List<string> newValues)
@@ -43,9 +43,9 @@ namespace OkayCloudSearch.Helper
         }
 
 
-        public List<string> IntToString(List<int> contraints)
+        public List<string> IntToString(List<int> constraints)
         {
-            return contraints.Select(entry => entry.ToString()).ToList();
+            return constraints.Select(entry => entry.ToString()).ToList();
         }
     }
 }

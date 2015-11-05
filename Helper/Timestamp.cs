@@ -1,19 +1,30 @@
 ﻿using System;
+using System.Globalization;
 
 namespace OkayCloudSearch.Helper
 {
-    public class Timestamp
+    public static class Timestamp
     {
-        public static int CurrentTimeStamp()
+        public static int CurrentTimestamp()
         {
-            return DateToTimeStamp(DateTime.Now);
+            return DateToTimestamp(DateTime.Now);
         }
 
-        public static int DateToTimeStamp(DateTime date)
+        public static int DateToTimestamp(DateTime date)
         {
-            long ticks = DateTime.UtcNow.Ticks - DateTime.Parse("01/01/1970 00:00:00").Ticks;
-            ticks /= 10000000; //Convert windows ticks to seconds
+            long ticks = date.Ticks - DateTime.Parse(EpochTime, CultureInfo.InvariantCulture).Ticks;
+            ticks /= TicksPerSecond;
             return (int) ticks;
-        } 
+        }
+
+        private static string EpochTime
+        {
+            get { return "01/01/1970 00:00:00"; }
+        }
+
+        private static int TicksPerSecond
+        {
+            get { return 10000000; }
+        }
     }
 }
