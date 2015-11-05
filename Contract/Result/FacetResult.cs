@@ -6,6 +6,6 @@ namespace OkayCloudSearch.Contract.Result
     public class FacetResult
     {
         public string Name { get; set; }
-        public List<Constraint> Contraint { get; set; }
+        public List<Constraint> Constraint { get; set; }
     }
 }

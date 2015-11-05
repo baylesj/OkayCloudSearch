@@ -13,7 +13,7 @@ namespace OkayCloudSearch.Query.Facets
             Constraint = new List<string>();
         }
 
-        public string AddContraint(string contrain)
+        public string AddConstraint(string contrain)
         {
             Constraint.Add(contrain);
             return contrain;

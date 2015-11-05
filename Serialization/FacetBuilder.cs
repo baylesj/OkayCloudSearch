@@ -18,9 +18,11 @@ namespace OkayCloudSearch.Serialization
 
         public List<FacetResult> BuildFacet(dynamic jsonDynamic)
         {
-            try{
+            try
+            {
                 return BuildFacetWithException(jsonDynamic);
-            }catch(Exception)
+            }
+            catch(Exception)
             {
                 return new List<FacetResult>();
             }
@@ -40,8 +42,8 @@ namespace OkayCloudSearch.Serialization
 
             foreach (KeyValuePair<string, object> pair in facetDictionary)
             {
-                Constraints contraints = CreateConstraint(pair);
-                liFacet.Add(new FacetResult { Name = pair.Key, Contraint = contraints.constraints });
+                Constraints constraints = CreateConstraint(pair);
+                liFacet.Add(new FacetResult { Name = pair.Key, Constraint = constraints.constraints });
             }
 
             return liFacet;
@@ -51,9 +53,9 @@ namespace OkayCloudSearch.Serialization
         {
             try
             {
-                var tmpContraints = JsonConvert.SerializeObject(pair.Value);
-                var contraints = JsonConvert.DeserializeObject<Constraints>(tmpContraints);
-                return contraints;
+                var tmpConstraints = JsonConvert.SerializeObject(pair.Value);
+                var constraints = JsonConvert.DeserializeObject<Constraints>(tmpConstraints);
+                return constraints;
             }
             catch (Exception)
             {

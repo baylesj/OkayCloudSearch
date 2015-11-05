@@ -4,18 +4,23 @@
     {
         public string Field { get; set; }
 		public string Condition { get; set; }
-		public bool IsOrConditionParam { get; set; }
+		public bool IsOrCondition { get; set; }
 
         public IntBooleanCondition(string field)
         {
             Field = field;
         }
 
-		public IntBooleanCondition(string field, int condition, bool isOrConditionParam = true)
+        public IntBooleanCondition(string field, int condition)
+            : this(field, condition, true)
+        {
+        }
+
+		public IntBooleanCondition(string field, int condition, bool isOrConditionParam)
 		{
 			Field = field;
 			Condition = condition.ToString();
-			IsOrConditionParam = isOrConditionParam;
+			IsOrCondition = isOrConditionParam;
 		}
 
         public void SetInterval(int from, int to)
@@ -33,15 +38,10 @@
             Condition = GetInterval(null, to);
         }
 
-        public string GetParam()
+        public string GetQueryString()
         {
             return Field + "%3A" + Condition;
         }
-
-		public bool IsOrCondition()
-		{
-			return IsOrConditionParam;
-		}
 
 		public bool IsList()
 		{

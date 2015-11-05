@@ -15,7 +15,6 @@ namespace OkayCloudSearch
     {
         private readonly string _documentUri;
         private readonly ActionBuilder<T> _actionBuilder;
-        private readonly WebHelper _webHelper;
         private readonly QueryBuilder<T> _queryBuilder;
         private readonly HitFeeder<T> _hitFeeder;
         private readonly FacetBuilder _facetBuilder;
@@ -26,7 +25,6 @@ namespace OkayCloudSearch
             _documentUri = string.Format("http://doc-{0}/{1}/documents/batch", awsCloudSearchId, apiVersion);
             _actionBuilder = new ActionBuilder<T>();
             _queryBuilder = new QueryBuilder<T>(searchUri);
-            _webHelper = new WebHelper();
             _hitFeeder = new HitFeeder<T>();
             _facetBuilder = new FacetBuilder();
         }
@@ -85,11 +83,16 @@ namespace OkayCloudSearch
             }
         }
 
+        public void SetFuzziness(double maxLevenshteinDistance)
+        {
+            _queryBuilder.MaxLevenshteinDistance = maxLevenshteinDistance;
+        }
+
         public SearchResult<T> SearchWithException(SearchQuery<T> query)
         {
             var searchUrlRequest = _queryBuilder.BuildSearchQuery(query);
 
-            var jsonResult = _webHelper.GetRequest(searchUrlRequest);
+            var jsonResult = WebHelper.GetRequest(searchUrlRequest);
 
             if (jsonResult.IsError)
                 return new SearchResult<T> {error = jsonResult.Exception, IsError = true};
@@ -131,7 +134,7 @@ namespace OkayCloudSearch
         {
             string actionJson = JsonConvert.SerializeObject(liAction);
 
-            var jsonResult = _webHelper.PostRequest(_documentUri, actionJson);
+            var jsonResult = WebHelper.PostRequest(_documentUri, actionJson);
 
             if (jsonResult.IsError)
                 return new TR { IsError = true, status = "error", errors = new List<Error> { new Error { message = jsonResult.Exception } } };
