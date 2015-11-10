@@ -75,7 +75,8 @@ namespace OkayCloudSearch.Builder
 
         private void FeedBooleanCriteria(string keyword, BooleanQuery booleanQuery, StringBuilder url)
         {
-            if(booleanQuery.Conditions == null || booleanQuery.Conditions.Count == 0)
+            bool hasConditions = booleanQuery.Conditions != null && booleanQuery.Conditions.Any();
+            if(String.IsNullOrWhiteSpace(keyword) && !hasConditions)
                 return;
 
             bool hasParameters = (url.Length > 0);
