@@ -14,12 +14,12 @@
 
         public string GetQueryString()
         {
-            return Field + "%3A" + "'" + Condition + "'";
+            return "(" + Field + "%3A" + "'" + Condition + "')";
         }
 
-		public bool IsList()
-		{
-			return false;
-		}
+        public bool IsList()
+        {
+            return false;
+        }
     }
 }

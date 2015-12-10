@@ -3,8 +3,8 @@
     public class IntBooleanCondition : IntegerRange, IBooleanCondition
     {
         public string Field { get; set; }
-		public string Condition { get; set; }
-		public bool IsOrCondition { get; set; }
+        public string Condition { get; set; }
+        public bool IsOrCondition { get; set; }
 
         public IntBooleanCondition(string field)
         {
@@ -16,12 +16,12 @@
         {
         }
 
-		public IntBooleanCondition(string field, int condition, bool isOrConditionParam)
-		{
-			Field = field;
-			Condition = condition.ToString();
-			IsOrCondition = isOrConditionParam;
-		}
+        public IntBooleanCondition(string field, int condition, bool isOrConditionParam)
+        {
+            Field = field;
+            Condition = condition.ToString();
+            IsOrCondition = isOrConditionParam;
+        }
 
         public void SetInterval(int from, int to)
         {
@@ -40,12 +40,12 @@
 
         public string GetQueryString()
         {
-            return Field + "%3A" + Condition;
+            return "(" + Field + "%3A" + Condition + ")";
         }
 
-		public bool IsList()
-		{
-			return false;
-		}
+        public bool IsList()
+        {
+            return false;
+        }
     }
 }

@@ -33,7 +33,7 @@ namespace OkayCloudSearch.Query.Boolean
 
         public string GetQueryString()
         {
-            return Field + ":(" + String.Join(Conditional, Conditions.Select(x => "\"" + x + "\"")) + ")";
+            return "(" + Field + ":(" + String.Join(Conditional, Conditions.Select(x => "\"" + x + "\"")) + "))";
         }
 
         public bool IsList()

@@ -36,7 +36,7 @@ namespace OkayCloudSearch.Query.Boolean
                 builder.Remove(builder.Length - 1, 1);
             }
 
-            return builder.ToString();
+            return "(" + builder + ")";
         }
 
         public bool IsList()

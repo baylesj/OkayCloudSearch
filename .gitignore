@@ -15,3 +15,4 @@ app.config.release
 app.config.test
 TestResults
 OkayCloudSearch*nupkg
+packages/

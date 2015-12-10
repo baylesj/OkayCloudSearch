@@ -4,7 +4,6 @@ using System.Reflection;
 using OkayCloudSearch.Contract;
 using OkayCloudSearch.Helper;
 using OkayCloudSearch.Query.Boolean;
-using OkayCloudSearch.Query.Facets;
 
 namespace OkayCloudSearch.Query
 {
@@ -14,19 +13,14 @@ namespace OkayCloudSearch.Query
 
         public string Keyword { get; set; }
 
-        public List<Facet> Facets { get; private set; }
-
         public List<string> Fields { get; private set; }
 
         public int? Start { get; set; }
 
         public int? Size { get; set; }
 
-        public string PublicSearchQueryString { get; set; }
-
         public SearchQuery(bool buildFieldsFromType = true)
         {
-            Facets = new List<Facet>();
             Fields = new List<string>();
 
             if (buildFieldsFromType)
