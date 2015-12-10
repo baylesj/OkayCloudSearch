@@ -87,6 +87,7 @@
     <Compile Include="Contract\Result\FacetResult.cs" />
     <Compile Include="Helper\ConvertSingle.cs" />
     <Compile Include="ICloudSearch.cs" />
+    <Compile Include="Query\Boolean\ListBooleanCondition.cs" />
     <Compile Include="Query\Boolean\StringListBooleanCondition.cs" />
     <Compile Include="Query\Boolean\IntListBooleanCondition.cs" />
     <Compile Include="Serialization\FacetBuilder.cs" />

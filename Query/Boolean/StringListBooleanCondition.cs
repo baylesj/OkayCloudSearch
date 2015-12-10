@@ -4,41 +4,14 @@ using System.Linq;
 
 namespace OkayCloudSearch.Query.Boolean
 {
-    public class StringListBooleanCondition : IBooleanCondition
+    public class StringListBooleanCondition : ListBooleanCondition<string>
     {
-        public string Field { get; set; }
-        public List<string> Conditions { get; private set; }
-        public bool IsOrCondition { get; set; }
-
-        private string Conditional
-        {
-            get
-            {
-                return IsOrCondition ?
-                    Constants.Operators.Or.ToQueryString() : Constants.Operators.And.ToQueryString();
-            }
-        }
-
-        public StringListBooleanCondition(string field, List<string> conditions)
-        : this(field, conditions, true)
-        {
-        }
-
-        public StringListBooleanCondition(string field, List<string> conditions, bool isOrCondition)
+        public StringListBooleanCondition(string field, List<string> conditions,
+            bool isOrCondition = true)
         {
             Field = field;
-            Conditions = conditions;
+            Conditions = new List<string> (conditions);
             IsOrCondition = isOrCondition;
-        }
-
-        public string GetQueryString()
-        {
-            return "(" + Field + ":(" + String.Join(Conditional, Conditions.Select(x => "\"" + x + "\"")) + "))";
-        }
-
-        public bool IsList()
-        {
-            return true;
         }
     }
 }

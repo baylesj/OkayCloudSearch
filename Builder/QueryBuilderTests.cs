@@ -63,6 +63,61 @@ namespace OkayCloudSearch.Builder
         }
 
         [Fact]
+        public void MultipleBooleanQueryAddsCompoundParameter()
+        {
+            TestQuery.BooleanQuery = new BooleanQuery
+            {
+                Conditions = new List<IBooleanCondition>
+                {
+                    new IntBooleanCondition("ThriftyThree", 33),
+                    new IntBooleanCondition("FourthyFour", 44)
+                }
+            };
+
+            var parsed = AssertValidQuery(TestQuery);
+
+            Assert.True(
+                ("((FourthyFour:44) AND (ThriftyThree:33))" == parsed["q"])
+             || ("((ThriftyThree:33) AND (FourthyFour:44))" == parsed["q"])
+                ); 
+            Assert.Equal("lucene", parsed["q.parser"]);
+        }
+
+        [Fact]
+        public void MultipleTypeBooleanQueryAddsCompoundParameter()
+        {
+            TestQuery.BooleanQuery = new BooleanQuery
+            {
+                Conditions = new List<IBooleanCondition>
+                {
+                    new IntBooleanCondition("ThriftyThree", 33),
+                    new StringBooleanCondition("FourthyFour", "Number")
+                }
+            };
+
+            var parsed = AssertValidQuery(TestQuery);
+
+            Assert.True(
+                ("((FourthyFour:'Number') AND (ThriftyThree:33))" == parsed["q"])
+              ||("((ThriftyThree:33) AND (FourthyFour:'Number'))" == parsed["q"])
+                );
+            Assert.Equal("lucene", parsed["q.parser"]);
+        }
+
+        [Fact]
+        public void IntListBooleanQueryAddsIntParameter()
+        {
+            TestQuery.BooleanQuery = new BooleanQuery();
+            TestQuery.BooleanQuery.Conditions.Add(
+                new IntListBooleanCondition("ThriftyThree", 
+                    new List<int>{33, 44, 55}));
+            var parsed = AssertValidQuery(TestQuery);
+
+            Assert.Equal("(ThriftyThree:(33 OR 44 OR 55))", parsed["q"]);
+            Assert.Equal("lucene", parsed["q.parser"]);
+        }
+
+        [Fact]
         public void StringBooleanQueryAddsStringParameter()
         {
             TestQuery.BooleanQuery = new BooleanQuery();
@@ -71,6 +126,20 @@ namespace OkayCloudSearch.Builder
             var parsed = AssertValidQuery(TestQuery);
 
             Assert.Equal("(ThriftyThree:'Turtle')", parsed["q"]);
+            Assert.Equal("lucene", parsed["q.parser"]);
+        }
+
+        [Fact]
+        public void StringListBooleanQueryAddsStringParameter()
+        {
+            TestQuery.BooleanQuery = new BooleanQuery();
+            TestQuery.BooleanQuery.Conditions.Add(
+                new StringListBooleanCondition("ThriftyThree", 
+                    new List<string>{"Turtle", "Rabbit", "Squirrel"}));
+            var parsed = AssertValidQuery(TestQuery);
+
+            Assert.Equal("(ThriftyThree:('Turtle' OR 'Rabbit' OR 'Squirrel'))",
+                parsed["q"]);
             Assert.Equal("lucene", parsed["q.parser"]);
         }
 
@@ -108,7 +177,7 @@ namespace OkayCloudSearch.Builder
             Assert.Equal(3, parsed.Count);
             QueryBuilder.MaxLevenshteinDistance = 0.3;
 
-            Assert.Equal("((Fuzzy OR Fuzzy~0.3) AND (Was OR Was~0.3))", 
+            Assert.Equal("(Fuzzy Was OR ((Fuzzy OR Fuzzy~0.3) AND (Was OR Was~0.3)))", 
                 parsed["q"]);
         }
 

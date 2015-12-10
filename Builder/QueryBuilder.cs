@@ -108,6 +108,10 @@ namespace OkayCloudSearch.Builder
                 var conditions = SplitKeywordIntoConditions(keyword);
                 var conditionsList = JoinConditionsList(conditions);
 
+                if (conditions.Count > 1)
+                    conditionsList = "(" + keyword + Constants.Operators.Or.ToQueryString() +
+                                     conditionsList + ")";
+
                 booleanConditions.Add(conditionsList);
             }
         }
