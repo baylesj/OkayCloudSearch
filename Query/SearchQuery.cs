@@ -19,6 +19,10 @@ namespace OkayCloudSearch.Query
 
         public int? Size { get; set; }
 
+        public string SortField { get; set; }
+
+        public bool ShouldSortAscending { get; set; }
+
         public SearchQuery(bool buildFieldsFromType = true)
         {
             Fields = new List<string>();

@@ -212,6 +212,57 @@ namespace OkayCloudSearch.Tests.Builder
         }
 
         [Fact]
+        public void AddingNullSortFieldAddsNoSortParameter()
+        {
+            TestQuery.SortField = null;
+
+            var parsed = AssertValidQuery(TestQuery);
+
+            Assert.False(parsed.AllKeys.ToList().Contains("sort"));
+        }
+
+        [Fact]
+        public void AddingEmptySortFieldAddsNoSortParameter()
+        {
+            TestQuery.SortField = "";
+
+            var parsed = AssertValidQuery(TestQuery);
+
+            Assert.False(parsed.AllKeys.ToList().Contains("sort"));
+        }
+
+        [Fact]
+        public void DefaultSortOrderIsDescending()
+        {
+            TestQuery.SortField = "x";
+
+            var parsed = AssertValidQuery(TestQuery);
+
+            Assert.Equal("x desc", parsed["sort"]);           
+        }
+
+        [Fact]
+        public void AddingSortFieldAddsSortParameter()
+        {
+            TestQuery.SortField = "grapefruit";
+
+            var parsed = AssertValidQuery(TestQuery);
+
+            Assert.Equal("grapefruit desc", parsed["sort"]);
+        }
+
+        [Fact]
+        public void SettingAscendingParameterChangesSortToAscending()
+        {
+            TestQuery.ShouldSortAscending = true;
+            TestQuery.SortField = "pineapple";
+
+            var parsed = AssertValidQuery(TestQuery);
+
+            Assert.Equal("pineapple asc", parsed["sort"]);
+        }
+
+        [Fact]
         public void AddingReturnFieldsAddsCommaSeparatedListParameter()
         {
             TestQuery.Fields.Clear();
@@ -301,22 +352,33 @@ namespace OkayCloudSearch.Tests.Builder
         private NameValueCollection AssertValidQuery(SearchQuery<SearchDocument> query)
         {
             string queryString = QueryBuilder.BuildSearchQuery(query);
-            var parsed = GetQueryCollection(queryString);
-            return parsed;
+
+            // API rule is query string can be empty, but not null
+            Assert.NotEqual(null, queryString);
+            if (queryString != String.Empty)
+            {
+                var parsed = GetQueryCollection(queryString);
+                return parsed;
+            }
+
+            return new NameValueCollection();
         }
 
         private static NameValueCollection GetQueryCollection(string queryString)
         {
             var splitString = SplitUri(queryString);
 
-            NameValueCollection parsed = HttpUtility.ParseQueryString(splitString[1]);
+            NameValueCollection parsed = new NameValueCollection();
+            if (splitString.Count > 1)
+            {
+                parsed = HttpUtility.ParseQueryString(splitString[1]);
+            }
             return parsed;
         }
 
         private static List<string> SplitUri(string queryString)
         {
             var splitString = queryString.Split('?').ToList();
-            Assert.Equal(2, splitString.Count);
             Assert.Equal(BaseUri, splitString[0]);
             return splitString;
         }

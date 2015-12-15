@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using OkayCloudSearch.Contract;
+using OkayCloudSearch.Helper;
 using OkayCloudSearch.Query;
 using OkayCloudSearch.Query.Boolean;
 
@@ -26,23 +27,35 @@ namespace OkayCloudSearch.Builder
             if (query == null)
                 throw new ArgumentNullException();
 
-            var url = new StringBuilder(_searchUri).Append("?");
+            QueryHelper helper = new QueryHelper(_searchUri);
 
-            FeedBooleanCriteria(query.Keyword, query.BooleanQuery, url);
+            FeedQuery(query, helper);
 
-            FeedReturnFields(query.Fields, url);
-
-            FeedMaxResults(query.Size, url);
-
-            FeedStartResultFrom(query.Start, url);
-
-            return url.ToString();
+            return helper.ToString();
         }
 
-        private void FeedBooleanCriteria(string keyword, BooleanQuery booleanQuery, StringBuilder url)
+        private void FeedQuery(SearchQuery<T> query, QueryHelper helper)
         {
-            bool hasConditions = booleanQuery != null 
-                && booleanQuery.Conditions != null 
+            FeedBooleanCriteria(query.Keyword, query.BooleanQuery, helper);
+            FeedReturnFields(query.Fields, helper);
+            FeedMaxResults(query.Size, helper);
+            FeedStartResultFrom(query.Start, helper);
+            FeedSortParameter(query.SortField, query.ShouldSortAscending, helper);
+        }
+
+        private void FeedSortParameter(string sortField, bool ascending, QueryHelper url)
+        {
+            if (!String.IsNullOrEmpty(sortField))
+            {
+                string value = sortField + " " + (ascending ? "asc" : "desc");
+                url.AppendField("sort", value);
+            }
+        }
+
+        private void FeedBooleanCriteria(string keyword, BooleanQuery booleanQuery, QueryHelper url)
+        {
+            bool hasConditions = (booleanQuery != null) 
+                && (booleanQuery.Conditions != null) 
                 && booleanQuery.Conditions.Any();
             if(String.IsNullOrWhiteSpace(keyword) && !hasConditions)
                 return;
@@ -78,12 +91,11 @@ namespace OkayCloudSearch.Builder
             return booleanConditions;
         }
 
-        private static void AppendConditionsToBuilder(StringBuilder url, List<string> booleanConditions)
+        private static void AppendConditionsToBuilder(QueryHelper url, List<string> booleanConditions)
         {
-            AppendSeparator(url);
-            url.Append("q.parser=lucene&q=");
+            url.AppendField("q.parser", "lucene");
             string query = JoinConditionsIntoQuery(booleanConditions);
-            url.Append(query);
+            url.AppendField("q", query);
         }
 
         private static string JoinConditionsIntoQuery(List<string> conditions)
@@ -164,70 +176,36 @@ namespace OkayCloudSearch.Builder
             andConditions.Append(String.Join(Constants.Operators.And.ToQueryString(), temporaryAndList));
         }
 
-        private void FeedStartResultFrom(int? start, StringBuilder url)
+        private void FeedStartResultFrom(int? start, QueryHelper url)
         {
             if (start.HasValue)
             {
                 if (start.Value < 0)
                     throw new InvalidOperationException();
 
-                AppendSeparator(url);
-                url.Append("start=");
-                url.Append(start.Value);
+                url.AppendField("start", start.Value.ToString());
             }
         }
 
-        private void FeedMaxResults(int? size, StringBuilder url)
+        private void FeedMaxResults(int? size, QueryHelper url)
         {
             if (size.HasValue)
             {
                 if (size <= 0)
                     throw new InvalidOperationException();
 
-                AppendSeparator(url);
-                url.Append("size=");
-                url.Append(size);
+                url.AppendField("size", size.Value.ToString());
             }
         }
 
 
-        private void FeedReturnFields(List<string> fields, StringBuilder url)
+        private void FeedReturnFields(List<string> fields, QueryHelper url)
         {
             if (fields == null || fields.Count == 0)
                 return;
 
-            AppendSeparator(url);
-            url.Append("return=");
-
-            foreach (var field in fields)
-            {
-                url.Append(field);
-                url.Append(",");
-            }
-
-            if (url.Length > 0)
-            {
-                url.Remove(url.Length - 1, 1);
-            }
-        }
-
-        private static void AppendSeparator(StringBuilder url)
-        {
-            var hasParameters = CheckIfStringBuilderHasQueryParameters(url);
-            if (hasParameters)
-            {
-                url.Append("&");
-            }
-        }
-
-        private static bool CheckIfStringBuilderHasQueryParameters(StringBuilder url)
-        {
-            bool hasParameters = false;
-            string soFar = url.ToString();
-            string[] portions = soFar.Split('?');
-            if (portions.Length == 2 && portions[1].Length > 0)
-                hasParameters = true;
-            return hasParameters;
+            string value = String.Join(",", fields);
+            url.AppendField("return", value);
         }
     }
 }
