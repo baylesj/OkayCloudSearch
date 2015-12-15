@@ -11,10 +11,7 @@ namespace OkayCloudSearch.Tests.Helper
         [Fact]
         public void NullBaseStringThrowsException()
         {
-            Assert.Throws(typeof (ArgumentNullException), () =>
-            {
-                var result = new QueryHelper(null);
-            });
+            Assert.Throws(typeof (ArgumentNullException), () => new QueryHelper(null));
         }
 
         [Fact]

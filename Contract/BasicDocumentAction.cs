@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OkayCloudSearch.Contract
 {
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class BasicDocumentAction
     {
         public string id { get; set; }

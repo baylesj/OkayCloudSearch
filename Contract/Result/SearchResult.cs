@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 using OkayCloudSearch.Contract.Facet;
 
 namespace OkayCloudSearch.Contract.Result
 {
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class SearchResult<T> where T : SearchDocument, new()
     {
-
         public bool IsError { get; set; }
 
         public string rank { get; set; }

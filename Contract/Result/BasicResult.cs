@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OkayCloudSearch.Contract.Result
 {
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class Error
     {
         public string message { get; set; }
     }
 
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class BasicResult
     {
         public bool IsError { get; set; }

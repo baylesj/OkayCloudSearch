@@ -6,15 +6,14 @@ namespace OkayCloudSearch.Builder
 {
     public class ActionBuilder<T> where T : SearchDocument
     {
-
-        public AddUpldateBasicDocumentAction<T> BuildAction(T document, ActionType actionType, int version)
+        public AddUpdateBasicDocumentAction<T> BuildAction(T document, ActionType actionType, int version)
         {
             var type = ActionTypeFunction.ActionTypeToString(actionType);
 
-            return new AddUpldateBasicDocumentAction<T> { type = type, id = document.id, lang = "en", fields = document, version = version };
+            return new AddUpdateBasicDocumentAction<T> { type = type, id = document.id, lang = "en", fields = document, version = version };
         }
 
-        public AddUpldateBasicDocumentAction<T> BuildAction(T document, ActionType actionType)
+        public AddUpdateBasicDocumentAction<T> BuildAction(T document, ActionType actionType)
         {
             int version = Timestamp.CurrentTimestamp();
 
