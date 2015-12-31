@@ -142,7 +142,8 @@ namespace OkayCloudSearch.Builder
 
         private static string EncodeQueryStringSubsection(string s)
         {
-            return HttpUtility.UrlEncode(s);
+            return Uri.EscapeDataString(s);
+
         }
 
         private static string DecodeWhiteSpacesForParsing(string keyword)

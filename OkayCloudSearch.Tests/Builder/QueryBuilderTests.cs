@@ -211,9 +211,9 @@ namespace OkayCloudSearch.Tests.Builder
 
             string rawQuery = QueryBuilder.BuildSearchQuery(TestQuery);
 
-            Match query = Regex.Match(rawQuery, "q=\\(([^&]*)\\)");
+            Match query = Regex.Match(rawQuery, "q=%28([^&]*)%29");
 
-            Assert.Equal("(FourthyFour%3a%27Number%27)+AND+(ThriftyThree%3a33)", query.Groups[1].Value);
+            Assert.Equal("%28FourthyFour%3A%27Number%27%29%20AND%20%28ThriftyThree%3A33%29", query.Groups[1].Value);
         }
 
         [Fact]
@@ -223,9 +223,9 @@ namespace OkayCloudSearch.Tests.Builder
 
             string rawQuery = QueryBuilder.BuildSearchQuery(TestQuery);
 
-            Match query = Regex.Match(rawQuery, "q=\\(([^&]*)\\)");
-            
-            Assert.Equal("Model%2fTemplate+OR+Model%2fTemplate%7e0.3", query.Groups[1].Value);
+            Match query = Regex.Match(rawQuery, "q=%28([^&]*)%29");
+
+            Assert.Equal("Model%2FTemplate%20OR%20Model%2FTemplate~0.3", query.Groups[1].Value);
         }
 
         [Fact]
