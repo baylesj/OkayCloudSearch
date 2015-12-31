@@ -40,7 +40,7 @@
 
         public string GetQueryString()
         {
-            return "(" + Field + "%3A" + Condition + ")";
+            return "(" + Field + ":" + Condition + ")";
         }
 
         public bool IsList()

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web;
 using OkayCloudSearch.Contract;
 using OkayCloudSearch.Helper;
 using OkayCloudSearch.Query;
@@ -36,6 +37,7 @@ namespace OkayCloudSearch.Builder
 
         private void FeedQuery(SearchQuery<T> query, QueryHelper helper)
         {
+
             FeedBooleanCriteria(query.Keyword, query.BooleanQuery, helper);
             FeedReturnFields(query.Fields, helper);
             FeedMaxResults(query.Size, helper);
@@ -95,7 +97,7 @@ namespace OkayCloudSearch.Builder
         {
             url.AppendField("q.parser", "lucene");
             string query = JoinConditionsIntoQuery(booleanConditions);
-            url.AppendField("q", query);
+            url.AppendField("q", EncodeQueryStringSubsection(query));
         }
 
         private static string JoinConditionsIntoQuery(List<string> conditions)
@@ -117,6 +119,7 @@ namespace OkayCloudSearch.Builder
                 {
                     keyword = TruncateKeyword(keyword);
                 }
+                keyword = DecodeWhiteSpacesForParsing(keyword);
                 var conditions = SplitKeywordIntoConditions(keyword);
                 var conditionsList = JoinConditionsList(conditions);
 
@@ -130,11 +133,22 @@ namespace OkayCloudSearch.Builder
 
         private List<string> SplitKeywordIntoConditions(string keyword)
         {
-            var words = keyword.Split(' ').ToList();
+            var words = keyword.Split().ToList();
             var conditions = words.Select(x =>
                 "(" + x + Constants.Operators.Or.ToQueryString()
                 + x + "~" + MaxLevenshteinDistance + ")").ToList();
             return conditions;
+        }
+
+        private static string EncodeQueryStringSubsection(string s)
+        {
+            return HttpUtility.UrlEncode(s);
+        }
+
+        private static string DecodeWhiteSpacesForParsing(string keyword)
+        {
+            keyword = keyword.Replace("%20", " ");
+            return keyword;
         }
 
         private static string JoinConditionsList(List<string> conditions)

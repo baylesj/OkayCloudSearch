@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using OkayCloudSearch.Builder;
 using OkayCloudSearch.Contract;
@@ -100,7 +101,7 @@ namespace OkayCloudSearch.Tests.Builder
 
             Assert.True(
                 ("((FourthyFour:'Number') AND (ThriftyThree:33))" == parsed["q"])
-              ||("((ThriftyThree:33) AND (FourthyFour:'Number'))" == parsed["q"])
+              || ("((ThriftyThree:33) AND (FourthyFour:'Number'))" == parsed["q"])
                 );
             Assert.Equal("lucene", parsed["q.parser"]);
         }
@@ -180,6 +181,51 @@ namespace OkayCloudSearch.Tests.Builder
 
             Assert.Equal("(Fuzzy Was OR ((Fuzzy OR Fuzzy~0.3) AND (Was OR Was~0.3)))", 
                 parsed["q"]);
+        }
+
+        [Fact]
+        public void MultipleKeywordsAreBrokenUpOnUrlEncodedWhiteSpace()
+        {
+            TestQuery.Keyword = "Navy%20Academy";
+
+            var parsed = AssertValidQuery(TestQuery);
+            Assert.Equal(3, parsed.Count);
+            QueryBuilder.MaxLevenshteinDistance = 0.3;
+
+            Assert.Equal("(Navy Academy OR ((Navy OR Navy~0.3) AND (Academy OR Academy~0.3)))",
+                parsed["q"]);
+        }
+
+        [Fact]
+        public void ColonsAreEncodedToNotBreakUrl()
+        {
+            TestQuery.Keyword = "";
+            TestQuery.BooleanQuery = new BooleanQuery
+            {
+                Conditions = new List<IBooleanCondition>
+                {
+                    new IntBooleanCondition("ThriftyThree", 33),
+                    new StringBooleanCondition("FourthyFour", "Number")
+                }
+            };
+
+            string rawQuery = QueryBuilder.BuildSearchQuery(TestQuery);
+
+            Match query = Regex.Match(rawQuery, "q=\\(([^&]*)\\)");
+
+            Assert.Equal("(FourthyFour%3a%27Number%27)+AND+(ThriftyThree%3a33)", query.Groups[1].Value);
+        }
+
+        [Fact]
+        public void ForwardSlashesAreEncodedToNotBreakUrl()
+        {
+            TestQuery.Keyword = "Model/Template";
+
+            string rawQuery = QueryBuilder.BuildSearchQuery(TestQuery);
+
+            Match query = Regex.Match(rawQuery, "q=\\(([^&]*)\\)");
+            
+            Assert.Equal("Model%2fTemplate+OR+Model%2fTemplate%7e0.3", query.Groups[1].Value);
         }
 
         [Fact]
