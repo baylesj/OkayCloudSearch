@@ -69,7 +69,7 @@ namespace OkayCloudSearch.Tests.Builder
         {
             TestQuery.BooleanQuery = new BooleanQuery
             {
-                Conditions = new List<IBooleanCondition>
+                Conditions = new List<BooleanCondition>
                 {
                     new IntBooleanCondition("ThriftyThree", 33),
                     new IntBooleanCondition("FourthyFour", 44)
@@ -90,7 +90,7 @@ namespace OkayCloudSearch.Tests.Builder
         {
             TestQuery.BooleanQuery = new BooleanQuery
             {
-                Conditions = new List<IBooleanCondition>
+                Conditions = new List<BooleanCondition>
                 {
                     new IntBooleanCondition("ThriftyThree", 33),
                     new StringBooleanCondition("FourthyFour", "Number")
@@ -202,7 +202,7 @@ namespace OkayCloudSearch.Tests.Builder
             TestQuery.Keyword = "";
             TestQuery.BooleanQuery = new BooleanQuery
             {
-                Conditions = new List<IBooleanCondition>
+                Conditions = new List<BooleanCondition>
                 {
                     new IntBooleanCondition("ThriftyThree", 33),
                     new StringBooleanCondition("FourthyFour", "Number")

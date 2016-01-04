@@ -1,10 +1,14 @@
-﻿namespace OkayCloudSearch.Query.Boolean
+﻿using System;
+
+namespace OkayCloudSearch.Query.Boolean
 {
-    public class StringBooleanCondition : IBooleanCondition
+    public class StringBooleanCondition : BooleanCondition
     {
         public string Field { get; set; }
         public string Condition { get; set; }
-        public bool IsOrCondition { get { return false; } }
+        public override bool IsOrCondition { get { return false; }
+            set { throw new NotImplementedException(); }
+        }
 
         public StringBooleanCondition(string field, string condition)
         {
@@ -12,12 +16,12 @@
             Condition = condition;
         }
 
-        public string GetQueryString()
+        public override string GetQueryString()
         {
-            return "(" + Field + ":" + "'" + Condition + "')";
+            return "(" + Field + ":" + "'" + Condition.Replace(" ", "+") + "')";
         }
 
-        public bool IsList()
+        public override bool IsList()
         {
             return false;
         }

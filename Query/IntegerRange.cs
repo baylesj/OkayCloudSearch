@@ -3,9 +3,9 @@ using System.Text;
 
 namespace OkayCloudSearch.Query
 {
-    public class IntegerRange
+    public static class IntegerRange
     {
-        protected string GetInterval(int? from, int? to)
+        public static string GetInterval(int? from, int? to)
         {
             if (from == null && to == null)
                 throw new Exception("Can't build interval");

@@ -5,11 +5,11 @@ namespace OkayCloudSearch.Query.Boolean
     public class BooleanQuery
     {
 
-        public List<IBooleanCondition> Conditions;
+        public List<BooleanCondition> Conditions;
 
         public BooleanQuery()
         {
-            Conditions = new List<IBooleanCondition>();
+            Conditions = new List<BooleanCondition>();
         }
     }
 }

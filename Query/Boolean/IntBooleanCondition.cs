@@ -1,10 +1,10 @@
 ﻿namespace OkayCloudSearch.Query.Boolean
 {
-    public class IntBooleanCondition : IntegerRange, IBooleanCondition
+    public class IntBooleanCondition : BooleanCondition
     {
         public string Field { get; set; }
         public string Condition { get; set; }
-        public bool IsOrCondition { get; set; }
+        public override bool IsOrCondition { get; set; }
 
         public IntBooleanCondition(string field)
         {
@@ -25,25 +25,25 @@
 
         public void SetInterval(int from, int to)
         {
-            Condition = GetInterval(from, to);
+            Condition = IntegerRange.GetInterval(from, to);
         }
 
         public void SetFrom(int from)
         {
-            Condition = GetInterval(from, null);
+            Condition = IntegerRange.GetInterval(from, null);
         }
 
         public void SetTo(int to)
         {
-            Condition = GetInterval(null, to);
+            Condition = IntegerRange.GetInterval(null, to);
         }
 
-        public string GetQueryString()
+        public override string GetQueryString()
         {
-            return "(" + Field + ":" + Condition + ")";
+            return "(" + Field + ":" + Condition.Replace(" ", "+") + ")";
         }
 
-        public bool IsList()
+        public override bool IsList()
         {
             return false;
         }

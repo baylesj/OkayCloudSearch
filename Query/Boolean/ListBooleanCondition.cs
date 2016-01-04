@@ -4,16 +4,16 @@ using System.Linq;
 
 namespace OkayCloudSearch.Query.Boolean
 {
-    public class ListBooleanCondition<T> : IBooleanCondition
+    public class ListBooleanCondition<T> : BooleanCondition
     {
         public string Field { get; set; }
         public List<T> Conditions { get; protected set; }
-        public bool IsOrCondition { get; set; }
+        public override bool IsOrCondition { get; set; }
 
-        public string GetQueryString()
+        public override string GetQueryString()
         {
             List<string> stringConditions = Conditions
-                .Select(x => x is string ? "'" + x + "'"
+                .Select(x => x is string ? "'" + (x as string).Replace(" ", "+") + "'"
                     : x.ToString()).ToList();
 
             return "(" + Field + ":(" + String.Join(Conditional, stringConditions) + "))";
@@ -28,7 +28,7 @@ namespace OkayCloudSearch.Query.Boolean
             }
         }
 
-        public bool IsList()
+        public override bool IsList()
         {
             return true;
         }

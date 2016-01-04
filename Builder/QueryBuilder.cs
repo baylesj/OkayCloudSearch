@@ -143,6 +143,8 @@ namespace OkayCloudSearch.Builder
         private static string EncodeQueryStringSubsection(string s)
         {
             return Uri.EscapeDataString(s);
+            //    .Replace("%20", " ").Replace("%27", "'")
+            //    .Replace("%28", "(").Replace("%29", ")").Replace("%3A", ":");
 
         }
 
