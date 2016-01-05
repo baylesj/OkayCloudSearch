@@ -93,15 +93,15 @@ namespace OkayCloudSearch.Tests.Builder
                 Conditions = new List<BooleanCondition>
                 {
                     new IntBooleanCondition("ThriftyThree", 33),
-                    new StringBooleanCondition("FourthyFour", "Number")
+                    new SingleBooleanCondition("FourthyFour", "Number")
                 }
             };
 
             var parsed = AssertValidQuery(TestQuery);
 
             Assert.True(
-                ("((FourthyFour:'Number') AND (ThriftyThree:33))" == parsed["q"])
-              || ("((ThriftyThree:33) AND (FourthyFour:'Number'))" == parsed["q"])
+                ("((FourthyFour:\"Number\") AND (ThriftyThree:33))" == parsed["q"])
+              || ("((ThriftyThree:33) AND (FourthyFour:\"Number\"))" == parsed["q"])
                 );
             Assert.Equal("lucene", parsed["q.parser"]);
         }
@@ -124,10 +124,10 @@ namespace OkayCloudSearch.Tests.Builder
         {
             TestQuery.BooleanQuery = new BooleanQuery();
             TestQuery.BooleanQuery.Conditions.Add(
-                new StringBooleanCondition("ThriftyThree", "Turtle"));
+                new SingleBooleanCondition("ThriftyThree", "Turtle"));
             var parsed = AssertValidQuery(TestQuery);
 
-            Assert.Equal("(ThriftyThree:'Turtle')", parsed["q"]);
+            Assert.Equal("(ThriftyThree:\"Turtle\")", parsed["q"]);
             Assert.Equal("lucene", parsed["q.parser"]);
         }
 
@@ -140,7 +140,7 @@ namespace OkayCloudSearch.Tests.Builder
                     new List<string>{"Turtle", "Rabbit", "Squirrel"}));
             var parsed = AssertValidQuery(TestQuery);
 
-            Assert.Equal("(ThriftyThree:('Turtle' OR 'Rabbit' OR 'Squirrel'))",
+            Assert.Equal("(ThriftyThree:(\"Turtle\" OR \"Rabbit\" OR \"Squirrel\"))",
                 parsed["q"]);
             Assert.Equal("lucene", parsed["q.parser"]);
         }
@@ -205,7 +205,7 @@ namespace OkayCloudSearch.Tests.Builder
                 Conditions = new List<BooleanCondition>
                 {
                     new IntBooleanCondition("ThriftyThree", 33),
-                    new StringBooleanCondition("FourthyFour", "Number")
+                    new SingleBooleanCondition("FourthyFour", "Number")
                 }
             };
 
@@ -213,7 +213,7 @@ namespace OkayCloudSearch.Tests.Builder
 
             Match query = Regex.Match(rawQuery, "q=%28([^&]*)%29");
 
-            Assert.Equal("%28FourthyFour%3A%27Number%27%29%20AND%20%28ThriftyThree%3A33%29", query.Groups[1].Value);
+            Assert.Equal("%28FourthyFour%3A%22Number%22%29%20AND%20%28ThriftyThree%3A33%29", query.Groups[1].Value);
         }
 
         [Fact]

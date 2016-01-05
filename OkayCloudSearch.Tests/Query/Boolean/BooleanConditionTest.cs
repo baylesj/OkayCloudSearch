@@ -18,9 +18,9 @@ namespace OkayCloudSearch.Tests.Query.Boolean
                 throw new System.NotImplementedException();
             }
 
-            public string UrlEncodeTest(string s)
+            public string EncodeTest(string s)
             {
-                return UrlEncodeCondition(s);
+                return EncodeCondition(s);
             }
         }
 
@@ -28,9 +28,9 @@ namespace OkayCloudSearch.Tests.Query.Boolean
         public void SpacesInFacetNamesAreEncodedAsSpaces()
         {
             AbstractTest condition = new AbstractTest();
-            string result = condition.UrlEncodeTest("James Bond");
+            string result = condition.EncodeTest("James Bond");
 
-            Assert.Equal("James+Bond", result);
+            Assert.Equal("\"James+Bond\"", result);
         }
     }
 }
