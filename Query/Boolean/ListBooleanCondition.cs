@@ -13,7 +13,7 @@ namespace OkayCloudSearch.Query.Boolean
         public override string GetQueryString()
         {
             List<string> stringConditions = Conditions
-                .Select(x => x is string ? "'" + (x as string).Replace(" ", "+") + "'"
+                .Select(x => x is string ? "\"" + (x as string).Replace(" ", "+") + "\""
                     : x.ToString()).ToList();
 
             return "(" + Field + ":(" + String.Join(Conditional, stringConditions) + "))";
